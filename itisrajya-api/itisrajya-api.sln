@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36518.9 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "itisrajya-api", "itisrajya-api.csproj", "{75F4A7CD-6776-4050-BDC5-21802B958126}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{75F4A7CD-6776-4050-BDC5-21802B958126}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75F4A7CD-6776-4050-BDC5-21802B958126}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75F4A7CD-6776-4050-BDC5-21802B958126}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75F4A7CD-6776-4050-BDC5-21802B958126}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FEE50FD0-AB60-475A-B372-1B632AB8CEB4}
+	EndGlobalSection
+EndGlobal
