@@ -1,3 +1,5 @@
+using itisrajyaApi.Hubs;
+using Microsoft.AspNetCore.SignalR;
 using System.Net;
 using System.Net.Mail;
 using System.Text.Json;
@@ -9,6 +11,8 @@ builder.Configuration
 	.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
 	.AddEnvironmentVariables();
 
+builder.Services.AddControllers();
+builder.Services.AddSignalR();
 builder.Services.AddSingleton<ChatSessionStore>();
 builder.Services.AddCors(options =>
 {
@@ -16,7 +20,8 @@ builder.Services.AddCors(options =>
 	{
 		policy.WithOrigins("http://localhost:4200", "http://127.0.0.1:4200")
 			  .AllowAnyHeader()
-			  .AllowAnyMethod();
+			  .AllowAnyMethod()
+			  .AllowCredentials();
 	});
 });
 
@@ -28,10 +33,16 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseHttpsRedirection();
+
 app.UseDefaultFiles();
 app.UseStaticFiles();
+
 app.UseRouting();
+
 app.UseCors("angular");
+
+app.UseAuthorization();
 
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
 
@@ -95,7 +106,7 @@ app.MapPost("/chat/start", (HttpContext http) =>
 	});
 });
 
-app.MapPost("/chat/message", (ChatMessageRequest request, HttpContext http) =>
+app.MapPost("/chat/message", async (ChatMessageRequest request, HttpContext http, IHubContext<ChatHub> hub) =>
 {
 	var store = http.RequestServices.GetRequiredService<ChatSessionStore>();
 	store.AppendMessage(request.SessionId, request.Sender, request.Message);
@@ -147,6 +158,16 @@ app.MapPost("/chat/message", (ChatMessageRequest request, HttpContext http) =>
 			WriteIndented = true
 		}));
 
+	await hub.Clients
+	.Group(request.SessionId)
+	.SendAsync("ReceiveMessage", new
+	{
+		node = nextNode,
+		sessionId = request.SessionId,
+		sender = request.Sender,
+		message = request.Message
+	});
+
 	return Results.Ok(new { success = true });
 });
 
@@ -191,6 +212,10 @@ app.MapPost("/chat/end", (EndSessionRequest request, HttpContext http) =>
 		success = true
 	});
 });
+
+app.MapControllers();
+
+app.MapHub<ChatHub>("/chatHub");
 
 app.MapFallbackToFile("index.html");
 
